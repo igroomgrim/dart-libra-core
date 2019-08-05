@@ -1,12 +1,15 @@
 import 'dart:typed_data';
+import 'package:bip39/bip39.dart' as bip39;
 import 'package:dart_libra_core/constants/mnemonicwords.dart';
 
 class Mnemonic {
   List<String> _words;
   
   Mnemonic({List<String> words}) {
-    if (words.isEmpty) {
-      // gen mnemonic words
+    if (words == null) {
+      final mnemonic = bip39.generateMnemonic(strength: 256);
+      this._words = mnemonic.split(' ');
+      return;
     }
 
     if (words.length < 6 || words.length % 6 != 0) {
