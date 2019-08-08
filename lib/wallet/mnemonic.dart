@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:dart_libra_core/constants/mnemonicwords.dart';
+import 'package:dart_libra_core/utils/helper.dart';
 
 class Mnemonic {
   List<String> _words;
@@ -31,12 +32,6 @@ class Mnemonic {
 
   Uint8List toBytes() {
     final wordsString = this.toString();
-    final uintArray = Uint8List(wordsString.length);
-    
-    uintArray.asMap().forEach((index, _) {
-      uintArray[index] = wordsString.codeUnitAt(index);
-    });
-
-    return uintArray;
+    return createUint8ListFromString(wordsString);
   }
  }
