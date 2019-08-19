@@ -11,7 +11,7 @@ class HmacUtils {
       final sha3 = SHA3256Digest(256);
       key = sha3.process(key);
     } else if (key.length < blockSize) {
-      key = Uint8List.fromList(key + Uint8List(128));
+      key = Uint8List.fromList(key + Uint8List(128) + Uint8List(blockSize));
     }
 
     for (int i = 0; i < blockSize; i++) {
