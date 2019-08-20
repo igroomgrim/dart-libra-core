@@ -1,11 +1,17 @@
 import 'dart:typed_data';
 
-Uint8List createUint8ListFromString(String s) {
-  var uintArray = Uint8List(s.length);
+Uint8List createBytesFromString(String string) {
+  var bytes = Uint8List(string.length);
   
-  uintArray.asMap().forEach((index, _) {
-    uintArray[index] = s.codeUnitAt(index);
+  bytes.asMap().forEach((index, _) {
+    bytes[index] = string.codeUnitAt(index);
   });
 
-  return uintArray;
+  return bytes;
+}
+
+String createHexStringFromBytes(Uint8List bytes) {
+  return bytes.map((byte) {
+    return byte.toRadixString(16).padLeft(2, '0');
+  }).join('');
 }
