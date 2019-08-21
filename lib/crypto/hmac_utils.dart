@@ -6,18 +6,27 @@ class HmacUtils {
     const blockSize = 136;
     final ipad = Uint8List(blockSize);
     final opad = Uint8List(blockSize);
+    var tempKey = Uint8List(blockSize);
 
     if (key.length > blockSize) {
       final sha3 = SHA3256Digest(256);
-      key = sha3.process(key);
+      final temp = sha3.process(key);
+
+      temp.asMap().forEach((index, _) => 
+        tempKey[index] = temp[index]
+      );
+
     } else if (key.length < blockSize) {
-      key = Uint8List.fromList(key + Uint8List(128) + Uint8List(blockSize));
+      key = Uint8List.fromList(key + Uint8List(128));
+      key.asMap().forEach((index, _) => 
+        tempKey[index] = key[index]
+      );
     }
 
     for (int i = 0; i < blockSize; i++) {
       /* tslint:disable */
-      ipad[i] = key[i] ^ 0x36;
-      opad[i] = key[i] ^ 0x5C;
+      ipad[i] = tempKey[i] ^ 0x36;
+      opad[i] = tempKey[i] ^ 0x5C;
       /* tslint:disable */
     }
 
