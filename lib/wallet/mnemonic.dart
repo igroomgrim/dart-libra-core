@@ -32,6 +32,6 @@ class Mnemonic {
 
   Uint8List toBytes() {
     final wordsString = this.toString();
-    return createUint8ListFromString(wordsString);
+    return createBytesFromString(wordsString);
   }
  }
