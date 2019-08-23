@@ -17,7 +17,6 @@ class HmacUtils {
       );
 
     } else if (key.length < blockSize) {
-      key = Uint8List.fromList(key + Uint8List(128));
       key.asMap().forEach((index, _) => 
         tempKey[index] = key[index]
       );
