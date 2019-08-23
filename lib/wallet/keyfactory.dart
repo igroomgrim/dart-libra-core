@@ -1,11 +1,9 @@
 import 'dart:typed_data';
-import 'package:dart_libra_core/utils/helper.dart';
-import 'package:dart_libra_core/wallet/mnemonic.dart';
-import 'package:pointycastle/export.dart';
-import 'package:pointycastle/digests/sha3.dart';
-import 'package:pointycastle/key_derivators/pbkdf2.dart';
 import 'package:dart_libra_core/constants/keyprefixes.dart';
-import 'package:pointycastle/pointycastle.dart';
+import 'package:dart_libra_core/crypto/pbkdf.dart';
+import 'package:dart_libra_core/crypto/hkdf.dart';
+import 'package:dart_libra_core/wallet/mnemonic.dart';
+import 'package:dart_libra_core/utils/helper.dart';
 
 class Seed {
   Uint8List _data;
@@ -16,13 +14,10 @@ class Seed {
     // iterations: 2048
     // Output length: 32
     final mnemonic = Mnemonic(words: words);
-    final sha3Digest = SHA3Digest(256);
-    final params = Pbkdf2Parameters(createUint8ListFromString('$KeyPrefixes.MnemonicSalt$salt'), 2048, 32);
-    final derivator = PBKDF2KeyDerivator(HMac(sha3Digest, 32));
-    derivator.init(params);
-    final data = derivator.process(mnemonic.toBytes());
+    final saltBuffer = createBytesFromString('${KeyPrefixes.MnemonicSalt}$salt');
+    final bytes = Pbkdf().pbkdf2(mnemonic.toBytes(), saltBuffer, 2048, 32);
 
-    return Seed(data);
+    return Seed(bytes);
   }
 
   Seed(Uint8List data) {
@@ -42,9 +37,10 @@ class KeyFactory {
 
   KeyFactory(Seed seed) {
     this._seed = seed;
+    this._masterPrk = Hkdf().extract(seed.data, createBytesFromString(KeyPrefixes.MasterKeySalt));
   }
 
   generateKey(int childDepth) {
-
+    // Generates a new key pair at the number position.
   }
 }
